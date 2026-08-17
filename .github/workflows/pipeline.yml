@@ -85,9 +85,9 @@ jobs:
             - name: Run Unit Tests
               run: npm test
 
-  #
-  #
-  #
+  # ==========================================
+  # FASE 3: Build & Push To DockerHub
+  # ==========================================
     docker:
         name: Build & Push to DockerHub
         needs: [lint-quality, test]
