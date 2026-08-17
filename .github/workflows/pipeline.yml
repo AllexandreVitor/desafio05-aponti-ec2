@@ -1,0 +1,27 @@
+name: CI / CD Pipeline
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+  # ==========================================
+  # FASE 1: SAST e Build
+  # Validam a segurança e a estrutura inicial
+  # ==========================================
+    security-sast:
+        name: SAST Security Scan
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v5
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v5
+              with:
+                node-version: '24'
+
+            - name: Audith Dependencies
+              run: npm audit --audit-level=high || true
+
