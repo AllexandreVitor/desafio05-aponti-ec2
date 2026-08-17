@@ -84,3 +84,36 @@ jobs:
 
             - name: Run Unit Tests
               run: npm test
+
+  #
+  #
+  #
+    docker:
+        name: Build & Push to DockerHub
+        needs: [lint-quality, test]
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout Source Code
+              uses: actions/checkout@v4
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Authenticate to Container Registry
+              uses: docker/login-action@v3
+              with:
+                username: ${{ secrets.DOCKER_API_NODE_LOGIN }}
+                password: ${{ secrets.DOCKER_API_NODE_PASSWORD }}
+
+            - name: Build and Push to Docker Hub
+              uses: docker/build-push-action@v5
+              with:
+                context: .
+                push: true
+                tags: |
+                  ${{ secrets.DOCKER_API_NODE_LOGIN }}/api-node:latest
+                  ${{ secrets.DOCKER_API_NODE_LOGIN }}/api-node:1.0.${{ github.run_number }}
+                  ${{ secrets.DOCKER_API_NODE_LOGIN }}/api-node:${{ github.sha }}
+                cache-from: type=gha
+                cache-to: type=gha,mode=max
+        
